@@ -73,19 +73,23 @@ class AuthController extends BaseController
             return $this->response->setJSON($response);
         }
 
+    $token = bin2hex(openssl_random_pseudo_bytes(16));
+
         $session_data = [
             'id' => $user['id'],
             'name' => $user['nombre_completo'],
             'email' => $user['correo'],
             'img' => $user['img'],
-            'isLoggedIn' => true
+      'isLoggedIn' => true,
+            'token' => $token
         ];
 
-        $this->session->set($session_data);
 
         $response['status'] = 200;
         $response['success'] = true;
         $response['message'] = 'Inicio de sesión exitoso';
+        $response['data'] = $session_data;
+      
 
         return $this->response->setJSON($response);
     }

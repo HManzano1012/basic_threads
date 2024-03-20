@@ -5,7 +5,7 @@ use CodeIgniter\Model;
 
 class AuthModel extends Model
 {
-    protected $table            = 'usuarios';
+    protected $table            = 'users';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
