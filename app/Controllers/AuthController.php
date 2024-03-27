@@ -6,6 +6,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\AuthModel;
 
+// Clase controladora para el inicio de sesión
 class AuthController extends BaseController
 {
     private $authModel;
@@ -24,11 +25,13 @@ class AuthController extends BaseController
             return $this->response->setJSON($response);
         }
 
+        // Reglas de validación
         $rules = [
             'email' => 'required|valid_email',
             'password' => 'required|min_length[8]|max_length[20]'
         ];
 
+        // Mensajes de validación
         $errors = [
             'email' => [
                 'required' => 'El correo electrónico es requerido',
@@ -41,6 +44,7 @@ class AuthController extends BaseController
             ]
         ];
 
+        // Validar datos de entrada
         if (!$this->validate($rules, $errors)) {
             $response['status'] = 500;
             $response['success'] = false;
@@ -52,8 +56,9 @@ class AuthController extends BaseController
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        $user = $this->authModel->where('correo', $email)->first();
+        $user = $this->authModel->where('mail', $email)->first();
 
+        // Verificar si el usuario existe
         if (!$user) {
             $response['status'] = 500;
             $response['success'] = false;
@@ -62,9 +67,10 @@ class AuthController extends BaseController
             return $this->response->setJSON($response);
         }
 
-        $password_verify = password_verify($password, $user['clave']);
+        $password_verify = password_verify($password, $user['password']);
 
 
+        //Validar clave
         if (!$password_verify) {
             $response['status'] = 500;
             $response['success'] = false;
@@ -73,18 +79,19 @@ class AuthController extends BaseController
             return $this->response->setJSON($response);
         }
 
-    $token = bin2hex(openssl_random_pseudo_bytes(16));
+        // Generar token 
+        $token = bin2hex(openssl_random_pseudo_bytes(16));
 
         $session_data = [
             'id' => $user['id'],
-            'name' => $user['nombre_completo'],
-            'email' => $user['correo'],
-            'img' => $user['img'],
-      'isLoggedIn' => true,
+            'name' => $user['name'],
+            'email' => $user['mail'],
+            'isLoggedIn' => true,
             'token' => $token
         ];
 
 
+        // Retornar data del usuario
         $response['status'] = 200;
         $response['success'] = true;
         $response['message'] = 'Inicio de sesión exitoso';

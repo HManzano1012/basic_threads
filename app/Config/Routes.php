@@ -1,6 +1,7 @@
 <?php
 
 use CodeIgniter\Router\RouteCollection;
+use App\Controllers\AuthController;
 
 /**
  * @var RouteCollection $routes
@@ -9,4 +10,4 @@ use CodeIgniter\Router\RouteCollection;
 
 
 $routes->get('/', 'Home::index');
-$routes->post('/login', 'Auth::login');
+$routes->post('/login', 'AuthController::login');
