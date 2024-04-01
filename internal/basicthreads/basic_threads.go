@@ -9,5 +9,3 @@ type Response struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
-
-// path: /sms

@@ -19,12 +19,55 @@ type jwtCustomClaims struct {
 	jwt.RegisteredClaims
 }
 
+func register(c echo.Context) error {
+	name := c.FormValue("name")
+	email := c.FormValue("email")
+	phone := c.FormValue("phone")
+
+	if len(name) == 0 || len(email) == 0 || len(phone) == 0 {
+		response := echo.Map{
+			"status":  "error",
+			"code":    400,
+			"message": "Name, email and phone are required",
+			"error":   "missing_fields",
+		}
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	userExists := database.ValidateUserExists(email)
+	if userExists {
+		response := echo.Map{
+			"status":  "error",
+			"code":    400,
+			"message": "User already exists",
+			"error":   "user_exists",
+		}
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	err := database.RegisterUser(name, email, phone)
+	if err != nil {
+		response := echo.Map{
+			"status":  "error",
+			"code":    500,
+			"message": "Internal server error",
+			"error":   "internal_server_error",
+		}
+		return c.JSON(http.StatusInternalServerError, response)
+	}
+
+	response := echo.Map{
+		"status":  "success",
+		"code":    200,
+		"message": "User registered successfully",
+	}
+
+	return c.JSON(http.StatusOK, response)
+}
+
 func login(c echo.Context) error {
 	username := c.FormValue("email")
 	password := c.FormValue("password")
-
-	fmt.Println(username)
-	fmt.Println(password)
 
 	if len(username) == 0 || len(password) == 0 {
 		response := echo.Map{
@@ -79,7 +122,6 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000", "http://127.0.0.1:3000"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
@@ -88,6 +130,7 @@ func main() {
 
 	// Login route
 	e.POST("/login", login)
+	e.POST("/register", register)
 
 	// Restricted group
 	// r := e.Group("/sms/")
