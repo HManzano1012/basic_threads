@@ -132,9 +132,6 @@ func main() {
 	e.POST("/login", login)
 	e.POST("/register", register)
 
-	// Restricted group
-	// r := e.Group("/sms/")
-
 	// Configure middleware with the custom claims type
 	config := echojwt.Config{
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
@@ -153,7 +150,6 @@ func main() {
 
 	fmt.Println(config)
 	// r.Use(echojwt.WithConfig(config))
-	// r.POST("send", sendSMS)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
