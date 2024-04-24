@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -11,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"basicthreads/internal/database"
+	"basicthreads/internal/users"
 )
 
 type jwtCustomClaims struct {
@@ -24,43 +24,7 @@ func register(c echo.Context) error {
 	email := c.FormValue("email")
 	phone := c.FormValue("phone")
 
-	if len(name) == 0 || len(email) == 0 || len(phone) == 0 {
-		response := echo.Map{
-			"status":  "error",
-			"code":    400,
-			"message": "Name, email and phone are required",
-			"error":   "missing_fields",
-		}
-		return c.JSON(http.StatusBadRequest, response)
-	}
-
-	userExists := database.ValidateUserExists(email)
-	if userExists {
-		response := echo.Map{
-			"status":  "error",
-			"code":    400,
-			"message": "User already exists",
-			"error":   "user_exists",
-		}
-		return c.JSON(http.StatusBadRequest, response)
-	}
-
-	err := database.RegisterUser(name, email, phone)
-	if err != nil {
-		response := echo.Map{
-			"status":  "error",
-			"code":    500,
-			"message": "Internal server error",
-			"error":   "internal_server_error",
-		}
-		return c.JSON(http.StatusInternalServerError, response)
-	}
-
-	response := echo.Map{
-		"status":  "success",
-		"code":    200,
-		"message": "User registered successfully",
-	}
+	response := users.RegisterUser(name, email, phone)
 
 	return c.JSON(http.StatusOK, response)
 }
@@ -69,51 +33,17 @@ func login(c echo.Context) error {
 	username := c.FormValue("email")
 	password := c.FormValue("password")
 
-	if len(username) == 0 || len(password) == 0 {
-		response := echo.Map{
-			"status":  "error",
-			"code":    400,
-			"message": "Email and password are required",
-		}
-		return c.JSON(http.StatusBadRequest, response)
-	}
+	response := users.LoginUser(username, password)
 
-	authUser := database.AuthUser(username, password)
+	return c.JSON(http.StatusOK, response)
+}
 
-	if !authUser {
-		response := echo.Map{
-			"status":  "error",
-			"code":    401,
-			"message": "Invalid credentials",
-		}
+func get_products(c echo.Context) error {
+	products := database.GetProducts()
 
-		return c.JSON(http.StatusUnauthorized, response)
-	}
+	fmt.Println(products)
 
-	fmt.Println("")
-
-	claims := &jwtCustomClaims{
-		username,
-		true,
-		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 4)),
-		},
-	}
-
-	// Create token with claims
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte("secret"))
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(http.StatusOK, echo.Map{
-		"status": "success",
-		"code":   200,
-		"token":  t,
-	})
+	return c.JSON(http.StatusOK, products)
 }
 
 func main() {
@@ -131,6 +61,7 @@ func main() {
 	// Login route
 	e.POST("/login", login)
 	e.POST("/register", register)
+	e.GET("/products", get_products)
 
 	// Configure middleware with the custom claims type
 	config := echojwt.Config{

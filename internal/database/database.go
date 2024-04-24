@@ -10,6 +10,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type Product struct {
+	ID          int
+	Name        string
+	Price       float64
+	Description string
+	Image       string
+}
+
 func connect() *sql.DB {
 	err := godotenv.Load()
 	if err != nil {
@@ -95,4 +103,35 @@ func RegisterUser(name string, email string, phone string) error {
 		panic(err.Error())
 	}
 	return nil
+}
+
+func GetProducts() []Product {
+	db := connect()
+	defer db.Close()
+
+	result, err := db.Query("SELECT product_id as id, name, price, description, img FROM products")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	Products := []Product{}
+
+	for result.Next() {
+		var product Product
+		err = result.Scan(
+			&product.ID,
+			&product.Name,
+			&product.Price,
+			&product.Description,
+			&product.Image,
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		Products = append(Products, product)
+
+	}
+
+	return Products
 }
