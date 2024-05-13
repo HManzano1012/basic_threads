@@ -109,7 +109,6 @@ func RegisterUser(name, email, phone string) echo.Map {
 	}
 
 	sendMailRegister(email, name)
-	// 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
 	response := echo.Map{
 		"status":  "success",
 		"code":    200,
