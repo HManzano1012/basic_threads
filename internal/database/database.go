@@ -135,3 +135,31 @@ func GetProducts() []Product {
 
 	return Products
 }
+
+func GetProduct(id string) Product {
+	db := connect()
+	defer db.Close()
+
+	result, err := db.Query(
+		"SELECT product_id as id, name, price, description, img FROM products where product_id = ? ",
+		id,
+	)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	var product Product
+	for result.Next() {
+		err = result.Scan(
+			&product.ID,
+			&product.Name,
+			&product.Price,
+			&product.Description,
+			&product.Image,
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+	return product
+}

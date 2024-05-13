@@ -1,6 +1,10 @@
 package users
 
 import (
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -104,6 +108,8 @@ func RegisterUser(name, email, phone string) echo.Map {
 		return response
 	}
 
+	sendMailRegister(email, name)
+	// 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
 	response := echo.Map{
 		"status":  "success",
 		"code":    200,
@@ -111,4 +117,51 @@ func RegisterUser(name, email, phone string) echo.Map {
 	}
 
 	return response
+}
+
+func sendMailRegister(email, name string) {
+	url := "https://api.brevo.com/v3/smtp/email"
+	method := "POST"
+
+	payload := strings.NewReader(`{  
+   "sender":{  
+      "name":"Sender Alex",
+      "email":"senderalex@example.com"
+   },
+   "to":[  
+      {  
+         "email":"` + email + `",
+         "name":"` + name + `"
+      }
+   ],
+   "subject":"Hello world",
+   "htmlContent":"<html><head></head><body><p>Hello,</p>Bienvenido ` + name + ` .</p></body></html>"
+}`)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	req.Header.Add("accept", "application/json")
+	req.Header.Add(
+		"api-key",
+		"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",
+	)
+	req.Header.Add("content-type", "application/json")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(body))
 }

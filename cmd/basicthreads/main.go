@@ -40,10 +40,13 @@ func login(c echo.Context) error {
 
 func get_products(c echo.Context) error {
 	products := database.GetProducts()
-
-	fmt.Println(products)
-
 	return c.JSON(http.StatusOK, products)
+}
+
+func get_product(c echo.Context) error {
+	id := c.Param("id")
+	product := database.GetProduct(id)
+	return c.JSON(http.StatusOK, product)
 }
 
 func main() {
@@ -62,6 +65,7 @@ func main() {
 	e.POST("/login", login)
 	e.POST("/register", register)
 	e.GET("/products", get_products)
+	e.GET("/product/:id", get_product)
 
 	// Configure middleware with the custom claims type
 	config := echojwt.Config{
