@@ -22,6 +22,7 @@ type Product struct {
 	Price       float64
 	Description string
 	Image       string
+	Categories  string
 }
 
 func connect() *sql.DB {
@@ -147,7 +148,8 @@ func GetProduct(id string) Product {
 	defer db.Close()
 
 	result, err := db.Query(
-		"SELECT product_id as id, name, price, description, img FROM products where product_id = ? ",
+		"SELECT p.product_id as id, p.name, p.price, p.description, p.img ,(select group_concat(c.name) from categories as c where c.id in (select group_concat(cp.id_category) from categories_product as cp where cp.id_product = ? group by cp.id_category)) as categories FROM products as p where p.product_id = ? ",
+		id,
 		id,
 	)
 	if err != nil {
@@ -162,6 +164,7 @@ func GetProduct(id string) Product {
 			&product.Price,
 			&product.Description,
 			&product.Image,
+			&product.Categories,
 		)
 		if err != nil {
 			panic(err.Error())
