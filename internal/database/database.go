@@ -10,6 +10,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type Category struct {
+	ID       int
+	Name     string
+	ParentID int
+}
+
 type Product struct {
 	ID          int
 	Name        string
@@ -162,4 +168,117 @@ func GetProduct(id string) Product {
 		}
 	}
 	return product
+}
+
+func GetCategories(id_category string) []Category {
+	db := connect()
+	defer db.Close()
+
+	err := db.Ping()
+	if err != nil {
+		panic(err.Error())
+	}
+	Categories := []Category{}
+
+	if id_category == "" {
+		result, err := db.Query(
+			"SELECT id,name FROM categories where parent_category_id is null",
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+		for result.Next() {
+			var category Category
+			err = result.Scan(
+				&category.ID,
+				&category.Name,
+			)
+			if err != nil {
+				panic(err.Error())
+			}
+
+			Categories = append(Categories, category)
+		}
+
+	} else {
+		result, err := db.Query(
+			"SELECT id,name,parent_category_id FROM categories where parent_category_id = ?",
+			id_category,
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		for result.Next() {
+			var category Category
+			err = result.Scan(
+				&category.ID,
+				&category.Name,
+				&category.ParentID,
+			)
+			if err != nil {
+				panic(err.Error())
+			}
+
+			Categories = append(Categories, category)
+
+		}
+	}
+
+	return Categories
+}
+
+func GetProductsCategory(id_category string) []Product {
+	db := connect()
+	defer db.Close()
+
+	result, err := db.Query(
+		"SELECT p.product_id as id, p.name, p.price, p.description, p.img FROM products as p inner join categories_product as cp on cp.id_product = p.product_id where cp.id_category = ?",
+		id_category,
+	)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	Products := []Product{}
+
+	for result.Next() {
+		var product Product
+		err = result.Scan(
+			&product.ID,
+			&product.Name,
+			&product.Price,
+			&product.Description,
+			&product.Image,
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		Products = append(Products, product)
+
+	}
+
+	return Products
+}
+
+func GetCategoryName(id string) string {
+	db := connect()
+	defer db.Close()
+
+	result, err := db.Query(
+		"SELECT name FROM categories where id = ?",
+		id,
+	)
+	if err != nil {
+		panic(err.Error())
+	}
+	var name string
+	for result.Next() {
+		err = result.Scan(&name)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+	return name
 }
