@@ -134,7 +134,138 @@ func sendMailRegister(email, name string) {
       }
    ],
    "subject":"Hello world",
-   "htmlContent":"<html><head></head><body><p>Hello,</p>Bienvenido ` + name + ` .</p></body></html>"
+   "htmlContent":'<!doctype html>
+<html>
+  <body>
+    <div
+      style='background-color:#eff4f3;color:#242424;font-family:Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;font-size:16px;font-weight:400;letter-spacing:0.15008px;line-height:1.5;margin:0;padding:32px 0;min-height:100%;width:100%'
+    >
+      <table
+        align="center"
+        width="100%"
+        style="margin:0 auto;max-width:600px;background-color:#e9f4f3"
+        role="presentation"
+        cellspacing="0"
+        cellpadding="0"
+        border="0"
+      >
+      
+        <tbody>
+          <tr style="width:100%">
+            <td>
+              <div
+                style="padding:0px 24px 0px 4px;background-color:#fcf8f8;text-align:center"
+              >
+                <a
+                  href="https://es.shein.com"
+                  style="text-decoration:none"
+                  target="_blank"
+                  ><img
+                    alt="Threads"
+                    src="img/threads.png"
+                    width="200"
+                    height="200"
+                    style="width:200px;height:200px;outline:none;border:none;text-decoration:none;vertical-align:middle;display:inline-block;max-width:100%"
+                /></a>
+              </div>
+              <div
+                style="font-size:16px;font-weight:bold;text-align:center;padding:12px 24px 16px 24px"
+              >
+                Hola, ` + name + ` 👋,
+              </div>
+              <div
+                style="color:#171717;background-color:#fefffc;font-size:16px;font-weight:bold;text-align:center;padding:12px 24px 12px 24px"
+              >
+                Gracias por registrarse en el sitio web THREADS.
+              </div>
+              <div
+                style="font-size:15px;font-weight:normal;text-align:center;padding:16px 24px 16px 24px"
+              >
+                Al registrarte obtuvistes ciertos beneficios que el sitio web
+                ofrece. DISFRUTA DE LA ROPA
+              </div>
+              <div style="padding:16px 0px 16px 0px">
+                <hr
+                  style="width:100%;border:none;border-top:1px solid #CCCCCC;margin:0"
+                />
+              </div>
+              <div
+                style="font-weight:bold;text-align:center;padding:0px 24px 0px 24px"
+              >
+                Cambiar clave de acceso:
+              </div>
+              <div style="text-align:center;padding:16px 24px 16px 24px">
+                <a
+                  href="https://www.usewaypoint.com"       
+                  style="color:#0A0A0A;font-size:17px;font-weight:bold;background-color:#f8f5f5;border-radius:64px;display:inline-block;padding:4px 8px;text-decoration:none"
+                  target="_blank"
+                  ><span
+                    ><!--[if mso
+                      ]><i
+                        style="letter-spacing: 8px;mso-font-width:-100%;mso-text-raise:12"
+                        hidden
+                        >&nbsp;</i
+                      ><!
+                    [endif]--></span
+                  ><span>Click</span
+                  ><span
+                    ><!--[if mso
+                      ]><i
+                        style="letter-spacing: 8px;mso-font-width:-100%"
+                        hidden
+                        >&nbsp;</i
+                      ><!
+                    [endif]--></span
+                  ></a
+                >
+              </div>
+              <div
+                style="font-size:13px;font-weight:bold;text-align:center;padding:16px 24px 16px 24px"
+              >
+                Para poder iniciar sesion, unicamente tienes que utilizar tu
+                correo y la contraseña
+              </div>
+              <div style="text-align:center;padding:20px 24px 24px 24px">
+                <a
+                  href="https://www.usewaypoint.com"  
+                  style="color:#0A0A0A;font-size:17px;font-weight:bold;background-color:#f4f8fa;border-radius:64px;display:block;padding:8px 12px;text-decoration:none"
+                  target="_blank"
+                  ><span
+                    ><!--[if mso
+                      ]><i
+                        style="letter-spacing: 12px;mso-font-width:-100%;mso-text-raise:18"
+                        hidden
+                        >&nbsp;</i
+                      ><!
+                    [endif]--></span
+                  ><span>INICIAR SESION </span
+                  ><span
+                    ><!--[if mso
+                      ]><i
+                        style="letter-spacing: 12px;mso-font-width:-100%"
+                        hidden
+                        >&nbsp;</i
+                      ><!
+                    [endif]--></span
+                  ></a
+                >
+              </div>
+              <div style="padding:16px 24px 40px 24px;text-align:center">
+                <img
+                  alt="Threads"
+                  src="https://i.pinimg.com/564x/ca/40/2e/ca402e8a89e96630d45d3e38a0a6952c.jpg"
+                  width="300"
+                  height="300"
+                  style="width:300px;height:300px;outline:none;border:none;text-decoration:none;vertical-align:middle;display:inline-block;max-width:100%"
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>'
 }`)
 
 	client := &http.Client{}
