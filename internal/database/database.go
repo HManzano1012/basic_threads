@@ -7,7 +7,6 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Category struct {
@@ -53,21 +52,16 @@ func AuthUser(user string, password string) bool {
 		panic(err.Error())
 	}
 	result, err := db.Query(
-		"SELECT email, password FROM customers WHERE email = ?  ",
+		"SELECT email, password FROM customers WHERE email = ? and password = MD5(?)",
 		user,
+		password,
 	)
 	if err != nil {
 		panic(err.Error())
 	}
 	defer result.Close()
 
-	var username string
-	var pass string
-	if result.Next() {
-		result.Scan(&username, &pass)
-	}
-	err = bcrypt.CompareHashAndPassword([]byte(pass), []byte(password))
-	return err == nil
+	return result.Next()
 }
 
 func ValidateUserExists(user string) bool {
@@ -78,7 +72,7 @@ func ValidateUserExists(user string) bool {
 		panic(err.Error())
 	}
 	result, err := db.Query(
-		"SELECT email FROM customers WHERE email = ?",
+		"SELECT email FROM customers WHERE email = ? ",
 		user,
 	)
 	if err != nil {
@@ -87,13 +81,17 @@ func ValidateUserExists(user string) bool {
 	defer result.Close()
 
 	var username string
+	if !result.Next() {
+		return false
+	}
+
 	if result.Next() {
 		result.Scan(&username)
 	}
 	return username == user
 }
 
-func RegisterUser(name string, email string, phone string) error {
+func RegisterUser(name, email, phone, password string) error {
 	db := connect()
 	defer db.Close()
 	err := db.Ping()
@@ -101,10 +99,11 @@ func RegisterUser(name string, email string, phone string) error {
 		panic(err.Error())
 	}
 	_, err = db.Exec(
-		"INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)",
+		"INSERT INTO customers (name, email, phone, password) VALUES (?, ?, ?,MD5(?))",
 		name,
 		email,
 		phone,
+		password,
 	)
 	if err != nil {
 		panic(err.Error())

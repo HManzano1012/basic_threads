@@ -30,8 +30,9 @@ func register(c echo.Context) error {
 	name := c.FormValue("name")
 	email := c.FormValue("email")
 	phone := c.FormValue("phone")
+	password := c.FormValue("password")
 
-	response := users.RegisterUser(name, email, phone)
+	response := users.RegisterUser(name, email, phone, password)
 
 	return c.JSON(http.StatusOK, response)
 }

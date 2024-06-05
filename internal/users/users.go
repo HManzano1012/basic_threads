@@ -74,12 +74,12 @@ func LoginUser(email, password string) echo.Map {
 	return response
 }
 
-func RegisterUser(name, email, phone string) echo.Map {
-	if len(name) == 0 || len(email) == 0 || len(phone) == 0 {
+func RegisterUser(name, email, phone, password string) echo.Map {
+	if len(name) == 0 || len(email) == 0 || len(phone) == 0 || len(password) == 0 {
 		response := echo.Map{
 			"status":  "error",
 			"code":    400,
-			"message": "Name, email and phone are required",
+			"message": "Name, email,phone and password are required",
 			"error":   "missing_fields",
 		}
 
@@ -97,7 +97,7 @@ func RegisterUser(name, email, phone string) echo.Map {
 		return response
 	}
 
-	err := database.RegisterUser(name, email, phone)
+	err := database.RegisterUser(name, email, phone, password)
 	if err != nil {
 		response := echo.Map{
 			"status":  "error",
