@@ -284,3 +284,28 @@ func GetCategoryName(id string) string {
 	}
 	return name
 }
+
+func GetUser(email string) string {
+	db := connect()
+	defer db.Close()
+	err := db.Ping()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	result, err := db.Query("SELECT  name FROM customers WHERE email = ?", email)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	var name string
+
+	for result.Next() {
+		err = result.Scan(&name)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	return name
+}
