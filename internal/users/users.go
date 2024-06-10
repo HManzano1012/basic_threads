@@ -266,7 +266,7 @@ func sendMailRegister(email, name string) {
 	req.Header.Add("accept", "application/json")
 	req.Header.Add(
 		"api-key",
-		"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",
+		"",
 	)
 	req.Header.Add("content-type", "application/json")
 
@@ -337,7 +337,7 @@ func sendMailContact(email, name, message string) {
 
 	req.Header.Add(
 		"api-key",
-		"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",
+		"",
 	)
 	req.Header.Add("content-type", "application/json")
 
