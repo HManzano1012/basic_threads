@@ -26,6 +26,16 @@ type Category struct {
 	Subcategories []Category
 }
 
+func contact_form(c echo.Context) error {
+	name := c.FormValue("name")
+	email := c.FormValue("email")
+	message := c.FormValue("message")
+
+	response := users.ContactForm(name, email, message)
+
+	return c.JSON(http.StatusOK, response)
+}
+
 func getUser(c echo.Context) error {
 	email := c.FormValue("email")
 	fmt.Println(email)
@@ -127,6 +137,7 @@ func main() {
 	e.GET("/categories", get_categories)
 	e.GET("/categories/:id", get_category)
 	e.POST("/getuser", getUser)
+	e.POST("/contactform", contact_form)
 
 	// Configure middleware with the custom claims type
 	config := echojwt.Config{

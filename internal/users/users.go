@@ -124,8 +124,8 @@ func sendMailRegister(email, name string) {
 
 	payload := strings.NewReader(`{  
    "sender":{  
-      "name":"Sender Alex",
-      "email":"senderalex@example.com"
+      "name":"Basic Threads",
+      "email":"basic@threads.com"
    },
    "to":[  
       {  
@@ -133,7 +133,7 @@ func sendMailRegister(email, name string) {
          "name":"` + name + `"
       }
    ],
-   "subject":"Hello world",
+   "subject":"Bienvenido a Threads",
    "htmlContent":'<!doctype html>
 <html>
   <body>
@@ -156,17 +156,6 @@ func sendMailRegister(email, name string) {
               <div
                 style="padding:0px 24px 0px 4px;background-color:#fcf8f8;text-align:center"
               >
-                <a
-                  href="https://es.shein.com"
-                  style="text-decoration:none"
-                  target="_blank"
-                  ><img
-                    alt="Threads"
-                    src="img/threads.png"
-                    width="200"
-                    height="200"
-                    style="width:200px;height:200px;outline:none;border:none;text-decoration:none;vertical-align:middle;display:inline-block;max-width:100%"
-                /></a>
               </div>
               <div
                 style="font-size:16px;font-weight:bold;text-align:center;padding:12px 24px 16px 24px"
@@ -293,5 +282,79 @@ func sendMailRegister(email, name string) {
 		fmt.Println(err)
 		return
 	}
+	fmt.Println(string(body))
+}
+
+func ContactForm(name, email, message string) echo.Map {
+	if len(name) == 0 || len(email) == 0 || len(message) == 0 {
+		response := echo.Map{
+			"status":  "error",
+			"code":    400,
+			"message": "Name, email and message are required",
+		}
+		return response
+	}
+
+	sendMailContact(email, name, message)
+
+	response := echo.Map{
+		"status":  "success",
+		"code":    200,
+		"message": "Message sent successfully",
+	}
+
+	return response
+}
+
+func sendMailContact(email, name, message string) {
+	url := "https://api.brevo.com/v3/smtp/email"
+	method := "POST"
+
+	payload := strings.NewReader(`{  
+   "sender":{  
+      "name":"Basic Threads",
+      "email":"basic@threads.com"
+    },
+    "to":[
+      { 
+        "email":"` + email + `",
+        "name":"` + name + `"
+      }
+    ],
+    "subject":"Contacto",
+    "htmlContent":"<!doctype html><html><body><div style=\'background-color:#eff4f3;color:#242424;font-family:Charter,\"Bitstream Charter\",\"Sitka Text\",Cambria,serif;font-size:16px;font-weight:400;letter-spacing:.15008px;line-height:1.5;margin:0;padding:32px 0;min-height:100%;width:100%\'><table align=\"center\" width=\"100%\" style=\"margin:0 auto;max-width:600px;background-color:#dcdcdc\" role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" border=\"3\"><tbody><tr style=\"width:100%\"><td><div style=\"padding:0 24px 0 4px;background-color:#fcf8f8;text-align:center\"><a href=\"https://es.shein.com\" style=\"text-decoration:none\" target=\"_blank\"></a><hr></div><div style=\"font-size:16px;font-weight:700;text-align:center;padding:12px 24px 16px 24px\">¡Nuevo comentario recibido!</div><div style=\"color:#171717;background-color:#fefffc;font-size:16px;font-weight:700;text-align:center;padding:12px 24px 12px 24px\">Hemos recibido un nuevo comentario de un cliente. A continuación, se detallan los datos del cliente:</div><div style=\"font-size:13px;font-weight:700;text-align:center;padding:16px 24px 16px 24px\"><div class=\"container\"><div class=\"form-field\"><label for=\"nombre\">Nombre:</label><br><br><span>` + name + `</span><hr></div><div class=\"form-field\"><label for=\"email\">Correo Electrónico:</label><br><br><span>` + email + `</span><hr></div><div class=\"form-field\"><label for=\"comentarios\">Comentario:</label><br><br><span>` + message + `</span><hr></div></div></div><br><div style=\"text-align:center;padding:20px 24px 24px 24px\"><a href=\"https://www.usewaypoint.com\" style=\"color:#0a0a0a;font-size:17px;font-weight:700;background-color:#f4f8fa;border-radius:64px;display:block;padding:8px 12px;text-decoration:none\" target=\"_blank\"><span>Basic Threads</span></a></div></td></tr></tbody></table></div></body></html>"
+
+}`)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	req.Header.Add("accept", "application/json")
+
+	req.Header.Add(
+		"api-key",
+		"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",
+	)
+	req.Header.Add("content-type", "application/json")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+
+		fmt.Println(err)
+		return
+	}
+
 	fmt.Println(string(body))
 }

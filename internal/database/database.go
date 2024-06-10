@@ -309,3 +309,7 @@ func GetUser(email string) string {
 
 	return name
 }
+
+func ContactForm(name, email, message string) string {
+	return "Message sent"
+}
