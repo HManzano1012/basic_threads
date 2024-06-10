@@ -317,11 +317,11 @@ func sendMailContact(email, name, message string) {
     },
     "to":[
       { 
-        "email":"` + email + `",
-        "name":"` + name + `"
+      "email":"mr1937012020@unab.edu.sv",
+        "name":"Basic Threads"
       }
     ],
-    "subject":"Contacto",
+    "subject":"Threads - Nuevo comentario recibido",
     "htmlContent":"<!doctype html><html><body><div style=\'background-color:#eff4f3;color:#242424;font-family:Charter,\"Bitstream Charter\",\"Sitka Text\",Cambria,serif;font-size:16px;font-weight:400;letter-spacing:.15008px;line-height:1.5;margin:0;padding:32px 0;min-height:100%;width:100%\'><table align=\"center\" width=\"100%\" style=\"margin:0 auto;max-width:600px;background-color:#dcdcdc\" role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" border=\"3\"><tbody><tr style=\"width:100%\"><td><div style=\"padding:0 24px 0 4px;background-color:#fcf8f8;text-align:center\"><a href=\"https://es.shein.com\" style=\"text-decoration:none\" target=\"_blank\"></a><hr></div><div style=\"font-size:16px;font-weight:700;text-align:center;padding:12px 24px 16px 24px\">¡Nuevo comentario recibido!</div><div style=\"color:#171717;background-color:#fefffc;font-size:16px;font-weight:700;text-align:center;padding:12px 24px 12px 24px\">Hemos recibido un nuevo comentario de un cliente. A continuación, se detallan los datos del cliente:</div><div style=\"font-size:13px;font-weight:700;text-align:center;padding:16px 24px 16px 24px\"><div class=\"container\"><div class=\"form-field\"><label for=\"nombre\">Nombre:</label><br><br><span>` + name + `</span><hr></div><div class=\"form-field\"><label for=\"email\">Correo Electrónico:</label><br><br><span>` + email + `</span><hr></div><div class=\"form-field\"><label for=\"comentarios\">Comentario:</label><br><br><span>` + message + `</span><hr></div></div></div><br><div style=\"text-align:center;padding:20px 24px 24px 24px\"><a href=\"https://www.usewaypoint.com\" style=\"color:#0a0a0a;font-size:17px;font-weight:700;background-color:#f4f8fa;border-radius:64px;display:block;padding:8px 12px;text-decoration:none\" target=\"_blank\"><span>Basic Threads</span></a></div></td></tr></tbody></table></div></body></html>"
 
 }`)
@@ -337,7 +337,7 @@ func sendMailContact(email, name, message string) {
 
 	req.Header.Add(
 		"api-key",
-		"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",
+		"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",
 	)
 	req.Header.Add("content-type", "application/json")
 
